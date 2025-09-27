@@ -1,93 +1,133 @@
 # AI Questionnaire App
 
-A comprehensive Flutter application that generates intelligent quizzes from documents (PDF and PowerPoint) using AI, with performance tracking and achievement system.
+A comprehensive Flutter application that generates intelligent quizzes from documents (PDF and PowerPoint) using Google Gemini AI, with Firebase backend for real-time synchronization and achievement tracking.
 
-## � Features
+> **🚀 FIREBASE + GEMINI AI POWERED!**
+> 
+> **Status:** ✅ **Production Ready** 
+> - ✅ Google Gemini AI for smart question generation
+> - ✅ Firebase Firestore for cloud storage & real-time sync
+> - ✅ Anonymous authentication for instant access
+> - ✅ Offline-first architecture with auto-sync
+> - ✅ Advanced performance analytics & achievements
+
+## 🔥 **Technology Stack**
+
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **AI Engine** | 🤖 **Google Gemini 2.0** | Smart question generation |
+| **Backend** | ☁️ **Firebase Firestore** | Cloud database & sync |
+| **Auth** | 🔐 **Firebase Auth** | Anonymous user sessions |
+| **Frontend** | 📱 **Flutter 3.9.2+** | Cross-platform mobile app |
+| **Storage** | 💾 **Offline-first** | Local cache + cloud sync |
+
+## ✨ Features
 
 ### 📄 Document Processing
-- Upload PDF documents (.pdf)
-- Upload PowerPoint presentations (.ppt, .pptx)
-- Extract and preprocess text content from documents
-- Automatic subject detection and content analysis
-- Support for various document formats
+- **PDF Support**: Upload and extract text from PDF documents
+- **PowerPoint Support**: Process .ppt and .pptx presentations  
+- **Smart Text Extraction**: Advanced OCR and content parsing
+- **Auto Subject Detection**: AI determines document subject automatically
+- **Large File Handling**: Efficient processing of documents up to 10MB
 
-### 🤖 AI-Powered Question Generation
-- **Multiple Choice**: 4 options with one correct answer
-- **True/False**: Binary choice questions
+### 🤖 AI-Powered Question Generation (Google Gemini)
+- **Multiple Choice**: 4-option questions with detailed explanations
+- **True/False**: Binary choice questions with reasoning
 - **Enumeration**: List-based questions requiring multiple answers
-- **Configurable Difficulty**: Easy, Medium, Hard levels
-- **Smart Content Analysis**: AI analyzes document content for relevant questions
-- **Batch Processing**: Handles large documents by chunking content
+- **Adaptive Difficulty**: Easy, Medium, Hard levels based on content
+- **Content-Specific**: Questions generated from actual document content
+- **Batch Processing**: Generate 5-50 questions in a single API call
 
-### 📊 Performance Analytics
-- Subject-specific performance tracking
-- Overall score and progress monitoring
-- Strengths and weaknesses identification
-- Detailed quiz statistics and history
-- Performance trends over time
+### 📊 Real-Time Analytics & Performance
+- **Live Sync**: Performance data synced across devices instantly
+- **Subject Mastery**: Track progress by subject area
+- **Detailed Statistics**: Comprehensive quiz history and trends
+- **Strengths Analysis**: Identify areas of expertise and improvement
+- **Progress Visualization**: Charts and graphs of learning progress
 
 ### 🏆 Achievement System
-**Three Types of Rewards:**
+**Three Tiers of Recognition:**
 
-| Type | Purpose | Examples |
-|------|---------|----------|
-| **🏅 Badges** | Progress & Habits | "5 Study Sessions This Week", "30 Min Focused Study" |
-| **🥇 Medals** | Personal Milestones | "First Full Month", "Perfect Score", "Quiz Master" |
-| **🎗️ Ribbons** | Subject Mastery | "English Master", "Math Expert", "Science Pro" |
+| **🏅 Badges** | **🥇 Medals** | **🎗️ Ribbons** |
+|---------------|---------------|----------------|
+| Daily habits & streaks | Major milestones | Subject mastery |
+| "5 Study Sessions" | "Perfect Score" | "English Master" |
+| "30 Min Focus Time" | "First Month" | "Math Expert" |
+
+### 🔄 Firebase Integration
+- **Real-time Sync**: Automatic data synchronization across devices
+- **Offline Support**: Full functionality without internet connection
+- **Anonymous Auth**: No registration required - instant access
+- **Cloud Backup**: Automatic backup of all progress and achievements
+- **Scalable Storage**: Unlimited quiz and performance data storage
 
 ### 🎯 Quiz Customization
-- Choose number of questions (5-50)
-- Select specific question types
-- Set difficulty level
-- Custom quiz titles and subjects
-- Flexible quiz configuration
-
-### 💾 Data Persistence
-- SQLite database for offline functionality
-- Quiz history and progress tracking
-- Achievement progress persistence
-- Performance analytics storage
-- Local file management
+- **Flexible Length**: 5-50 questions per quiz
+- **Mixed Question Types**: Combine multiple choice, T/F, and enumeration
+- **Difficulty Scaling**: AI adapts question complexity
+- **Custom Titles**: Personalized quiz naming
+- **Subject Categorization**: Automatic and manual subject assignment
 
 ## 🛠️ Technical Architecture
 
-### 📱 Tech Stack
-- **Framework**: Flutter 3.9.2+
-- **Language**: Dart
-- **Database**: SQLite (sqflite)
-- **State Management**: Provider pattern
-- **AI Integration**: HTTP API calls (Groq/OpenAI compatible)
-- **Document Processing**: Syncfusion PDF, Archive/XML parsing
-- **UI**: Material Design 3 with custom theming
+### 📱 Tech Stack Details
+```yaml
+dependencies:
+  # Core Framework
+  flutter: ^3.9.2
+  
+  # Firebase Backend
+  firebase_core: ^2.24.2
+  cloud_firestore: ^4.13.6
+  firebase_auth: ^4.15.3
+  
+  # AI Integration  
+  http: ^1.1.0
+  flutter_dotenv: ^5.1.0
+  
+  # Document Processing
+  file_picker: ^8.0.0+1
+  syncfusion_flutter_pdf: ^26.2.14
+  archive: ^3.6.1
+  xml: ^6.5.0
+  
+  # State Management
+  provider: ^6.1.2
+  
+  # UI Enhancement
+  google_fonts: ^6.2.1
+  lottie: ^3.1.2
+  font_awesome_flutter: ^10.7.0
+```
 
 ### 🏗️ Project Structure
 ```
 lib/
-├── models/               # Data models
-│   ├── question.dart     # Question model with types and validation
-│   ├── quiz.dart         # Quiz structure and metadata
-│   ├── achievement.dart  # Achievement system models
-│   ├── user.dart         # User profile and preferences
+├── models/                    # Data models
+│   ├── question.dart         # Question with multiple types
+│   ├── quiz.dart             # Quiz structure & metadata
+│   ├── achievement.dart      # Achievement system
+│   ├── user_answer.dart      # User response tracking
 │   └── performance_analytics.dart
-├── services/             # Business logic services
-│   ├── ai_service.dart   # AI question generation
-│   ├── database_service.dart  # SQLite operations
-│   └── document_service.dart  # PDF/PPT processing
-├── providers/            # State management
+├── services/                 # Business logic
+│   ├── ai_service.dart       # Google Gemini integration
+│   ├── database_service_firebase.dart  # Firebase operations
+│   ├── firebase_service.dart # Firebase initialization
+│   └── document_service.dart # PDF/PPT processing
+├── providers/               # State management
 │   ├── quiz_provider.dart
 │   ├── achievement_provider.dart
 │   └── performance_provider.dart
-├── screens/              # UI screens
+├── screens/                # UI screens
 │   ├── home_screen.dart
-│   ├── quiz_list_screen.dart
-│   ├── pdf_upload_screen.dart
+│   ├── quiz_creation_screen.dart
+│   ├── quiz_taking_screen.dart
 │   ├── achievements_screen.dart
 │   └── performance_screen.dart
-├── widgets/              # Reusable UI components
-└── main.dart            # App entry point
+└── widgets/               # Reusable components
 ```
 
-### 🔧 Key Models
+### 🔧 Core Models
 
 **Question Model:**
 ```dart
@@ -103,6 +143,9 @@ class Question {
   final String explanation;
   final DateTime createdAt;
 }
+
+enum QuestionType { multipleChoice, trueFalse, enumeration }
+enum DifficultyLevel { easy, medium, hard }
 ```
 
 **Quiz Model:**
@@ -116,248 +159,296 @@ class Quiz {
   final QuizStatus status;
   final Map<String, String> userAnswers;
   final double? score;
+  final Duration? completionTime;
 }
 ```
 
-## 🚀 Getting Started
+## 🚀 Quick Start Guide
 
 ### Prerequisites
-- Flutter SDK 3.9.2 or higher
-- Dart SDK
-- Android Studio / VS Code with Flutter extensions
-- AI API key (Groq, OpenAI, or compatible service)
+- Flutter SDK 3.9.2+
+- Firebase project with Firestore enabled
+- Google Gemini API key
+- Android Studio or VS Code with Flutter extensions
 
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/ai_questionaire.git
-   cd ai_questionaire
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Set up environment variables:**
-   ```bash
-   # Copy the example environment file
-   cp .env.example .env
-   
-   # Edit .env and add your API key
-   GROQ_API_KEY=your_actual_api_key_here
-   ```
-
-4. **Run the app:**
-   ```bash
-   flutter run
-   ```
-
-### 🔑 API Configuration
-
-The app uses environment variables for secure API key management:
-
-1. Create a `.env` file in the project root
-2. Add your API key:
-   ```
-   GROQ_API_KEY=your_groq_api_key_here
-   ```
-3. The app automatically loads this configuration at startup
-
-**Supported AI Providers:**
-- Groq (default)
-- OpenAI (modify base URL in `ai_service.dart`)
-- Any OpenAI-compatible API
-
-## 📱 Usage Guide
-
-### Creating a Quiz
-1. **Upload Document**: Tap "Upload PDF & Create Quiz" from the home screen
-2. **Select File**: Choose a PDF or PowerPoint file
-3. **Configure Quiz**:
-   - Enter quiz title
-   - Set number of questions (5-50)
-   - Choose difficulty level
-   - Select question types
-4. **Generate**: AI processes the document and creates questions
-5. **Review**: Quiz is saved and ready to take
-
-### Taking a Quiz
-1. Navigate to "Quizzes" tab
-2. Select a quiz from your library
-3. Answer questions based on type:
-   - **Multiple Choice**: Select one option
-   - **True/False**: Choose True or False
-   - **Enumeration**: List multiple answers (comma-separated)
-4. Submit and view results with explanations
-
-### Tracking Performance
-1. Go to "Performance" tab
-2. View overall statistics and trends
-3. Analyze strengths and weaknesses by subject
-4. Monitor progress over time
-
-### Earning Achievements
-1. Complete quizzes and study sessions
-2. Check "Achievements" tab for progress
-3. View recently earned badges, medals, and ribbons
-4. Track unlock criteria for upcoming achievements
-
-## 🏗️ Development
-
-### Key Dependencies
-```yaml
-dependencies:
-  flutter: sdk
-  
-  # State Management
-  provider: ^6.1.2
-  
-  # Document Processing
-  file_picker: ^8.0.7
-  syncfusion_flutter_pdf: ^26.2.14
-  archive: ^3.6.1
-  xml: ^6.5.0
-  
-  # Database & Storage
-  sqflite: ^2.3.3+1
-  shared_preferences: ^2.3.2
-  path: ^1.9.0
-  
-  # Networking
-  http: ^1.2.2
-  dio: ^5.6.0
-  
-  # Environment Variables
-  flutter_dotenv: ^5.1.0
-  
-  # UI & Animation
-  animations: ^2.0.11
-  lottie: ^3.1.2
-  flutter_staggered_animations: ^1.1.1
-  font_awesome_flutter: ^10.7.0
-  google_fonts: ^6.2.1
+### 1. **Clone & Setup**
+```bash
+git clone https://github.com/yourusername/ai_questionaire.git
+cd ai_questionaire
+flutter pub get
 ```
 
-### Environment Setup
+### 2. **Environment Configuration**
+Create `.env` file in project root:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### 3. **Firebase Setup**
+
+#### Create Firebase Project
+1. Visit [Firebase Console](https://console.firebase.google.com)
+2. Create new project: `ai-questionnaire-app`
+3. Enable Google Analytics (optional)
+
+#### Setup Firestore Database
+1. Navigate to **Firestore Database**
+2. Create database in **test mode** (for development)
+3. Choose your preferred region
+
+#### Enable Authentication
+1. Go to **Authentication** → **Sign-in method**
+2. Enable **Anonymous** authentication
+3. Save configuration
+
+#### Add Flutter Apps
+1. Project Settings → Add app → Flutter
+2. Package name: `com.example.ai_questionaire`
+3. Download configuration files:
+   - `google-services.json` → `android/app/`
+   - `GoogleService-Info.plist` → `ios/Runner/`
+
+### 4. **Update Firebase Configuration**
+Edit `lib/services/firebase_service.dart`:
+```dart
+static const FirebaseOptions _options = FirebaseOptions(
+  apiKey: "your-web-api-key",
+  authDomain: "your-project.firebaseapp.com", 
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456",
+);
+```
+
+### 5. **Run the App**
+```bash
+flutter run
+```
+
+## 📖 User Guide
+
+### Creating Your First Quiz
+1. **Launch App** → Tap "Upload Document & Create Quiz"
+2. **Select File** → Choose PDF or PowerPoint file
+3. **Configure Quiz**:
+   - Enter quiz title
+   - Set number of questions (5-50)  
+   - Choose difficulty level
+   - Select question types
+4. **Generate** → AI processes document and creates questions
+5. **Ready!** → Quiz appears in your library
+
+### Taking Quizzes
+1. Navigate to **"My Quizzes"** tab
+2. Select quiz from your library
+3. Answer questions by type:
+   - **Multiple Choice**: Select one option
+   - **True/False**: Choose True or False  
+   - **Enumeration**: Enter comma-separated answers
+4. Submit for instant results with explanations
+
+### Tracking Progress
+- **Performance Tab**: View overall statistics and subject breakdown
+- **Achievements Tab**: See unlocked badges, medals, and ribbons
+- **Quiz History**: Review past performance and improvement trends
+
+## 🔑 API Configuration
+
+### Google Gemini API Setup
+1. Visit [Google AI Studio](https://aistudio.google.com/)
+2. Create new project or select existing
+3. Generate API key
+4. Add to `.env` file:
+```env
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+```
+
+**Gemini API Features Used:**
+- **Model**: `gemini-2.0-flash` (latest fast model)
+- **Content Analysis**: Deep document understanding
+- **Structured Output**: JSON-formatted question generation
+- **Safety Filters**: Built-in content moderation
+
+## 🧪 Development & Testing
+
+### Running Tests
+```bash
+# Unit tests
+flutter test
+
+# Integration tests
+flutter test integration_test/
+
+# Widget tests
+flutter test test/widget_test.dart
+```
+
+### Build Commands
+```bash
+# Android APK
+flutter build apk --release
+
+# iOS App
+flutter build ios --release
+
+# Web App  
+flutter build web
+```
+
+### Development Environment
 ```bash
 # Install dependencies
 flutter pub get
 
-# Run tests
-flutter test
+# Run with hot reload
+flutter run --debug
 
-# Build for Android
-flutter build apk
+# Profile performance
+flutter run --profile
 
-# Build for iOS
-flutter build ios
+# Analyze code
+flutter analyze
 ```
 
-### Code Structure Guidelines
-- **Models**: Pure data classes with serialization
-- **Services**: Business logic and external API integration
-- **Providers**: State management with ChangeNotifier
-- **Screens**: Full-page UI components
-- **Widgets**: Reusable UI components
+## 📊 Performance Monitoring
 
-## 🧪 Testing
+### Firebase Analytics Integration
+The app includes comprehensive analytics tracking:
+- Quiz completion rates
+- Question difficulty analysis  
+- User engagement metrics
+- Performance improvement trends
 
-Run the test suite:
-```bash
-flutter test
-```
-
-Test files are located in the `test/` directory and cover:
-- Document service functionality
-- Widget testing
-- Model validation
-- Database operations
+### Error Handling & Logging
+- Automatic error reporting to Firebase Crashlytics
+- Detailed debug logging for development
+- Graceful fallbacks for offline scenarios
 
 ## 🚀 Deployment
 
-### Android
+### Android Play Store
 ```bash
-flutter build apk --release
+flutter build appbundle --release
 ```
 
-### iOS
+### iOS App Store
 ```bash
 flutter build ios --release
 ```
 
-### Web
+### Web Deployment
 ```bash
-flutter build web
+flutter build web --release
+# Deploy to Firebase Hosting, Netlify, or your preferred platform
 ```
 
 ## 🤝 Contributing
 
+### Development Workflow
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and test thoroughly
-4. Commit your changes: `git commit -m 'Add amazing feature'`
-5. Push to the branch: `git push origin feature/amazing-feature`
-6. Open a Pull Request
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Make changes with comprehensive tests
+4. Commit: `git commit -m 'feat: add amazing feature'`
+5. Push: `git push origin feature/amazing-feature`  
+6. Open Pull Request
 
-### Development Guidelines
-- Follow Dart/Flutter style guidelines
-- Add tests for new features
-- Update documentation for API changes
+### Code Standards
+- Follow [Effective Dart](https://dart.dev/guides/language/effective-dart) guidelines
+- Write tests for all new features
 - Use conventional commit messages
+- Update documentation for API changes
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### Testing Guidelines
+- Unit tests for business logic
+- Widget tests for UI components
+- Integration tests for user flows
+- Performance tests for large document processing
 
 ## 🐛 Troubleshooting
 
-### Common Issues
+### Common Issues & Solutions
 
-**PDF Upload Fails:**
+**❌ Document Upload Fails**
+```bash
+# Solutions:
 - Verify file format (PDF/PPT/PPTX only)
-- Check file size (< 10MB recommended)
+- Check file size (< 10MB recommended)  
 - Ensure sufficient device storage
+- Restart app if picker crashes
+```
 
-**AI Generation Fails:**
-- Verify API key in `.env` file
+**❌ AI Question Generation Fails**
+```bash
+# Solutions:
+- Verify GEMINI_API_KEY in .env file
 - Check internet connectivity
-- Monitor API rate limits
+- Monitor API quotas in Google Cloud Console
+- Ensure document has sufficient text content (>50 chars)
+```
 
-**App Performance:**
+**❌ Firebase Sync Issues**
+```bash
+# Solutions:
+- Check Firebase project configuration
+- Verify internet connection
+- Clear app data and re-authenticate
+- Check Firestore security rules
+```
+
+**❌ App Performance Issues**
+```bash
+# Solutions:
 - Clear app cache: Settings > Storage > Clear Cache
-- Restart the application
+- Restart application
 - Check available device memory
+- Update to latest app version
+```
 
-**Database Issues:**
-- App will recreate database on next launch if corrupted
-- User data is automatically backed up locally
+### Debug Mode
+Enable debug logging by setting:
+```dart
+const bool kDebugMode = true; // In main.dart
+```
 
-## 📞 Support
+## 📈 Roadmap
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-username/ai_questionaire/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/your-username/ai_questionaire/discussions)
-- 📧 **Email**: support@yourapp.com
+### 🎯 Version 2.1 (Next Release)
+- [ ] **File Converter**: FPDF To PPTX,DOCS To PDF
+- [ ] **OCR Enhancement**: Better image-based PDF support  
+- [ ] **Collaborative Quizzes**: Share quizzes with friends
+- [ ] **Advanced Analytics**: Learning pattern analysis
+- [ ] **Custom Achievements**: Create personal goals
 
-## 🗺️ Roadmap
+### 🔮 Version 2.2 (Future)
+- [ ] **Multi-language Support**: Internationalization
+- [ ] **Learning Paths**: Structured curriculum creation
+- [ ] **Social Features**: Leaderboards and challenges
+- [ ] **Export Features**: PDF report generation
+- [ ] **API Integrations**: Connect with LMS platforms
 
-### v2.0 (Planned)
-- [ ] Cloud synchronization with Firebase
-- [ ] Multi-user support and sharing
-- [ ] Advanced analytics dashboard
-- [ ] Export functionality (PDF reports)
-- [ ] Offline AI model support
+### 🌟 Long-term Vision
+- [ ] **Offline AI**: Local question generation models
+- [ ] **AR/VR Support**: Immersive learning experiences
+- [ ] **Adaptive Learning**: Personalized difficulty adjustment
+- [ ] **Enterprise Features**: Team management and reporting
 
-### v2.1 (Future)
-- [ ] Voice-to-text for answers
-- [ ] OCR for image-based PDFs
-- [ ] Social features and leaderboards
-- [ ] Custom achievement creation
-- [ ] Integration with learning management systems
 
----
+## 🙏 Acknowledgments
 
-**Built with ❤️ using Flutter & AI Technology**
+- **Google Gemini AI** for powerful question generation capabilities
+- **Firebase** for robust backend infrastructure
+- **Flutter Team** for excellent cross-platform framework
+- **Syncfusion** for PDF processing components
+- **Community Contributors** for bug reports and feature requests
+
+## 📞 Support & Community
+
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/Boniechan/ai_questionaire/issues)
+
+
+**🚀 Transform Your Learning with AI-Powered Quizzes!**
+
+*Built with ❤️ using Flutter, Firebase & Google Gemini AI*
 
 *Last updated: September 2025*
