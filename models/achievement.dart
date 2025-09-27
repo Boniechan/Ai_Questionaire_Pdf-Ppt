@@ -68,20 +68,20 @@ class Achievement {
     String? iconPath,
     String? subject,
     Map<String, dynamic>? criteria,
-    DateTime? unlockedAt,
     bool? isUnlocked,
+    DateTime? unlockedAt, // Changed from unlockedDate to unlockedAt
   }) {
     return Achievement(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       type: type ?? this.type,
-      category: category ?? this.category,
+      category: category ?? this.category, // Added missing category
       iconPath: iconPath ?? this.iconPath,
-      subject: subject ?? this.subject,
-      criteria: criteria ?? this.criteria,
-      unlockedAt: unlockedAt ?? this.unlockedAt,
+      subject: subject ?? this.subject, // Added missing subject
+      criteria: criteria ?? this.criteria, // Added missing criteria
       isUnlocked: isUnlocked ?? this.isUnlocked,
+      unlockedAt: unlockedAt ?? this.unlockedAt, // Changed parameter name
     );
   }
 }

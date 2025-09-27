@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/models.dart';
 import '../providers/quiz_provider.dart';
+import 'quiz_taking_screen.dart'; // Add this import
 
 class QuizListScreen extends StatelessWidget {
   const QuizListScreen({super.key});
@@ -89,10 +90,13 @@ class _QuizCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to quiz detail screen
-          ScaffoldMessenger.of(
+          // Navigate to quiz taking screen
+          Navigator.push(
             context,
-          ).showSnackBar(SnackBar(content: Text('Quiz: ${quiz.title}')));
+            MaterialPageRoute(
+              builder: (context) => QuizTakingScreen(quiz: quiz),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(

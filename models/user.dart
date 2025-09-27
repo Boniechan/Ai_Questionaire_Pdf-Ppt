@@ -1,69 +1,53 @@
 class User {
   final String id;
-  final String name;
   final String email;
-  final String avatarPath;
+  final String name;
   final DateTime createdAt;
-  final DateTime lastActiveAt;
-  final Map<String, dynamic> preferences;
-  final List<String> favoriteSubjects;
+  final DateTime? updatedAt;
 
-  User({
+  const User({
     required this.id,
-    required this.name,
     required this.email,
-    this.avatarPath = '',
+    required this.name,
     required this.createdAt,
-    required this.lastActiveAt,
-    this.preferences = const {},
-    this.favoriteSubjects = const [],
+    this.updatedAt,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] as String,
+      email: json['email'] as String,
+      name: json['name'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
       'email': email,
-      'avatarPath': avatarPath,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'lastActiveAt': lastActiveAt.millisecondsSinceEpoch,
-      'preferences': preferences,
-      'favoriteSubjects': favoriteSubjects,
+      'name': name,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
-  }
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      avatarPath: json['avatarPath'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
-      lastActiveAt: DateTime.fromMillisecondsSinceEpoch(json['lastActiveAt']),
-      preferences: Map<String, dynamic>.from(json['preferences'] ?? {}),
-      favoriteSubjects: List<String>.from(json['favoriteSubjects'] ?? []),
-    );
   }
 
   User copyWith({
     String? id,
-    String? name,
     String? email,
-    String? avatarPath,
+    String? name,
     DateTime? createdAt,
-    DateTime? lastActiveAt,
-    Map<String, dynamic>? preferences,
-    List<String>? favoriteSubjects,
+    DateTime? updatedAt,
   }) {
     return User(
       id: id ?? this.id,
-      name: name ?? this.name,
       email: email ?? this.email,
-      avatarPath: avatarPath ?? this.avatarPath,
+      name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
-      lastActiveAt: lastActiveAt ?? this.lastActiveAt,
-      preferences: preferences ?? this.preferences,
-      favoriteSubjects: favoriteSubjects ?? this.favoriteSubjects,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

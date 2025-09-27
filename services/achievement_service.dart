@@ -1,5 +1,5 @@
 import '../models/models.dart';
-import 'database_service.dart';
+import 'database_service_firebase.dart';
 
 class AchievementService {
   final DatabaseService _databaseService = DatabaseService();
@@ -255,45 +255,63 @@ class AchievementService {
     String userId,
     String achievementId,
   ) async {
-    final achievement = (await _databaseService.getAllAchievements())
-        .firstWhere((a) => a.id == achievementId);
+    try {
+      final achievement = (await _databaseService.getAllAchievements())
+          .firstWhere((a) => a.id == achievementId);
 
-    final performance = await _databaseService.getPerformanceAnalytics(userId);
+      final performance = await _databaseService.getPerformanceAnalytics(
+        userId,
+      );
+      final userQuizzes = await _databaseService.getAllQuizzes();
 
-    switch (achievement.category) {
-      case AchievementCategory.progress:
-        final requiredQuizzes =
-            achievement.criteria['quizzes_completed'] as int? ?? 1;
-        final userQuizzes = await _databaseService.getAllQuizzes();
-        final completedQuizzes = userQuizzes.where((q) => q.isCompleted).length;
-        return (completedQuizzes / requiredQuizzes).clamp(0.0, 1.0);
+      switch (achievement.id) {
+        case 'badge_first_quiz':
+          final completedQuizzes = userQuizzes
+              .where((q) => q.isCompleted)
+              .length;
+          return completedQuizzes >= 1 ? 1.0 : 0.0;
 
-      case AchievementCategory.consistency:
-        if (achievement.id == 'badge_study_streak_5') {
-          final sessions = await _countWeeklyStudySessions(userId);
-          return (sessions / 5).clamp(0.0, 1.0);
-        }
-        return 0.0;
+        case 'badge_study_streak_5':
+          final weeklyQuizzes = await _countWeeklyStudySessions(userId);
+          return (weeklyQuizzes / 5.0).clamp(0.0, 1.0);
 
-      case AchievementCategory.subject:
-        if (performance != null && achievement.subject.isNotEmpty) {
-          final subjectPerformance = performance.getSubjectPerformance(
-            achievement.subject,
-          );
-          if (subjectPerformance != null) {
-            final minPercentage =
-                achievement.criteria['min_percentage'] as double? ?? 85.0;
-            return (subjectPerformance.percentage / minPercentage).clamp(
-              0.0,
-              1.0,
+        case 'medal_perfect_score':
+          if (performance != null) {
+            final hasPerfectScore = performance.subjectPerformances.any(
+              (sp) => sp.percentage >= 100.0,
             );
+            return hasPerfectScore ? 1.0 : 0.0;
           }
-        }
-        return 0.0;
+          return 0.0;
 
-      case AchievementCategory.milestone:
-        // Milestones are typically binary (0% or 100%)
-        return 0.0;
+        case 'medal_first_month':
+          final monthlyQuizzes = await _countMonthlyQuizzes(userId);
+          return (monthlyQuizzes / 20.0).clamp(0.0, 1.0);
+
+        case 'ribbon_english_master':
+        case 'ribbon_math_master':
+        case 'ribbon_science_master':
+          if (performance != null && achievement.subject.isNotEmpty) {
+            final subjectPerformance = performance.getSubjectPerformance(
+              achievement.subject,
+            );
+            if (subjectPerformance != null) {
+              final percentageProgress = (subjectPerformance.percentage / 85.0)
+                  .clamp(0.0, 1.0);
+              final quizProgress = (subjectPerformance.quizzesTaken / 3.0)
+                  .clamp(0.0, 1.0);
+              // Combined progress (both percentage and quiz count matter)
+              return (percentageProgress + quizProgress) / 2.0;
+            }
+          }
+          return 0.0;
+
+        default:
+          return 0.0;
+      }
+    } catch (e) {
+      print('Error calculating progress for $achievementId: $e');
+      return 0.0;
     }
   }
 
@@ -310,6 +328,27 @@ class AchievementService {
               quiz.completedAt != null &&
               quiz.completedAt!.isAfter(weekStart) &&
               quiz.completedAt!.isBefore(weekEnd),
+        )
+        .length;
+  }
+
+  /// Helper to count monthly quizzes
+  Future<int> _countMonthlyQuizzes(String userId) async {
+    final now = DateTime.now();
+    final monthStart = DateTime(now.year, now.month, 1);
+    final monthEnd = DateTime(
+      now.year,
+      now.month + 1,
+      1,
+    ).subtract(const Duration(days: 1));
+
+    final allQuizzes = await _databaseService.getAllQuizzes();
+    return allQuizzes
+        .where(
+          (quiz) =>
+              quiz.completedAt != null &&
+              quiz.completedAt!.isAfter(monthStart) &&
+              quiz.completedAt!.isBefore(monthEnd),
         )
         .length;
   }

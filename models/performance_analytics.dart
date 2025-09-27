@@ -34,7 +34,7 @@ class SubjectPerformance {
       subject: json['subject'],
       totalQuestions: json['totalQuestions'],
       correctAnswers: json['correctAnswers'],
-      percentage: json['percentage'],
+      percentage: json['percentage'].toDouble(),
       quizzesTaken: json['quizzesTaken'],
       lastActivity: DateTime.fromMillisecondsSinceEpoch(json['lastActivity']),
     );
@@ -94,15 +94,21 @@ class PerformanceAnalytics {
   factory PerformanceAnalytics.fromJson(Map<String, dynamic> json) {
     return PerformanceAnalytics(
       userId: json['userId'],
-      subjectPerformances: (json['subjectPerformances'] as List)
-          .map((sp) => SubjectPerformance.fromJson(sp))
-          .toList(),
-      totalQuizzes: json['totalQuizzes'],
-      totalQuestions: json['totalQuestions'],
-      totalCorrectAnswers: json['totalCorrectAnswers'],
-      overallPercentage: json['overallPercentage'],
-      totalStudyTime: Duration(milliseconds: json['totalStudyTime']),
-      lastUpdated: DateTime.fromMillisecondsSinceEpoch(json['lastUpdated']),
+      subjectPerformances:
+          (json['subjectPerformances'] as List<dynamic>?)
+              ?.map(
+                (sp) => SubjectPerformance.fromJson(sp as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
+      totalQuizzes: json['totalQuizzes'] ?? 0,
+      totalQuestions: json['totalQuestions'] ?? 0,
+      totalCorrectAnswers: json['totalCorrectAnswers'] ?? 0,
+      overallPercentage: (json['overallPercentage'] ?? 0.0).toDouble(),
+      totalStudyTime: Duration(milliseconds: json['totalStudyTime'] ?? 0),
+      lastUpdated: DateTime.fromMillisecondsSinceEpoch(
+        json['lastUpdated'] ?? DateTime.now().millisecondsSinceEpoch,
+      ),
     );
   }
 

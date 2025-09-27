@@ -42,6 +42,7 @@ class PerformanceScreen extends StatelessWidget {
                 _OverallPerformanceCard(provider: performanceProvider),
                 const SizedBox(height: 24),
                 _StrengthsWeaknessesSection(provider: performanceProvider),
+                const SizedBox(height: 20), // Bottom padding
               ],
             ),
           );
@@ -73,50 +74,56 @@ class _OverallPerformanceCard extends StatelessWidget {
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    title: 'Total Quizzes',
-                    value: '${analytics.totalQuizzes}',
-                    icon: Icons.quiz,
-                    color: Colors.blue,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _StatCard(
-                    title: 'Questions Answered',
-                    value: '${analytics.totalQuestions}',
-                    icon: Icons.question_answer,
-                    color: Colors.green,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    title: 'Correct Answers',
-                    value: '${analytics.totalCorrectAnswers}',
-                    icon: Icons.check_circle,
-                    color: Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _StatCard(
-                    title: 'Overall Score',
-                    value: '${analytics.overallPercentage.toInt()}%',
-                    icon: Icons.trending_up,
-                    color: provider.getPerformanceColor(
-                      analytics.overallPercentage,
+            // First row
+            IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      title: 'Total Quizzes',
+                      value: '${analytics.totalQuizzes}',
+                      icon: Icons.quiz,
+                      color: Colors.blue,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _StatCard(
+                      title: 'Questions Answered',
+                      value: '${analytics.totalQuestions}',
+                      icon: Icons.question_answer,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Second row
+            IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      title: 'Correct Answers',
+                      value: '${analytics.totalCorrectAnswers}',
+                      icon: Icons.check_circle,
+                      color: Colors.green,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _StatCard(
+                      title: 'Overall Score',
+                      value: '${analytics.overallPercentage.toInt()}%',
+                      icon: Icons.trending_up,
+                      color: provider.getPerformanceColor(
+                        analytics.overallPercentage,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -132,25 +139,76 @@ class _StrengthsWeaknessesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
       children: [
-        Expanded(
-          child: _SubjectPerformanceCard(
-            title: 'Strengths',
-            subjects: provider.strengths,
-            icon: Icons.trending_up,
+        // Expert Subjects
+        if (provider.expertSubjects.isNotEmpty) ...[
+          _SubjectPerformanceCard(
+            title: 'Expert Subjects',
+            subjects: provider.expertSubjects,
+            icon: Icons.star,
             color: Colors.green,
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _SubjectPerformanceCard(
-            title: 'Weaknesses',
-            subjects: provider.weaknesses,
-            icon: Icons.trending_down,
-            color: Colors.red,
-          ),
+          const SizedBox(height: 16),
+        ],
+
+        // Good and Needs Improvement in responsive layout
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final bool isWideScreen = constraints.maxWidth > 600;
+
+            if (isWideScreen &&
+                provider.goodSubjects.isNotEmpty &&
+                provider.needsImprovementSubjects.isNotEmpty) {
+              // Side by side layout for wide screens
+              return IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _SubjectPerformanceCard(
+                        title: 'Good Performance',
+                        subjects: provider.goodSubjects,
+                        icon: Icons.trending_up,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _SubjectPerformanceCard(
+                        title: 'Needs Improvement',
+                        subjects: provider.needsImprovementSubjects,
+                        icon: Icons.trending_down,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              // Vertical layout for narrow screens or when only one section exists
+              return Column(
+                children: [
+                  if (provider.goodSubjects.isNotEmpty) ...[
+                    _SubjectPerformanceCard(
+                      title: 'Good Performance',
+                      subjects: provider.goodSubjects,
+                      icon: Icons.trending_up,
+                      color: Colors.orange,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (provider.needsImprovementSubjects.isNotEmpty)
+                    _SubjectPerformanceCard(
+                      title: 'Needs Improvement',
+                      subjects: provider.needsImprovementSubjects,
+                      icon: Icons.trending_down,
+                      color: Colors.red,
+                    ),
+                ],
+              );
+            }
+          },
         ),
       ],
     );
@@ -177,15 +235,20 @@ class _SubjectPerformanceCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
                 Icon(icon, color: color, size: 20),
                 const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -194,6 +257,7 @@ class _SubjectPerformanceCard extends StatelessWidget {
             if (subjects.isEmpty) ...[
               Center(
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.info_outline, color: Colors.grey[400], size: 32),
                     const SizedBox(height: 8),
@@ -210,33 +274,37 @@ class _SubjectPerformanceCard extends StatelessWidget {
               ...subjects.map(
                 (subject) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
                               subject.subject,
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(fontWeight: FontWeight.w500),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 4),
-                            LinearProgressIndicator(
-                              value: subject.percentage / 100,
-                              backgroundColor: Colors.grey[300],
-                              valueColor: AlwaysStoppedAnimation<Color>(color),
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${subject.percentage.toInt()}%',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: color,
+                                ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${subject.percentage.toInt()}%',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: color,
-                        ),
+                      const SizedBox(height: 6),
+                      LinearProgressIndicator(
+                        value: subject.percentage / 100,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: AlwaysStoppedAnimation<Color>(color),
+                        minHeight: 6,
                       ),
                     ],
                   ),
@@ -266,27 +334,36 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: color, size: 24),
           const SizedBox(height: 8),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
+          FittedBox(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
           ),
+          const SizedBox(height: 4),
           Text(
             title,
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontSize: 12),
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
